@@ -9,7 +9,6 @@ import os
 import subprocess
 from setuptools import setup
 
-NAME = 'mozdef_client_config'
 VERSION = '0.0.1'
 
 
@@ -44,8 +43,8 @@ def read(fname):
 
 
 setup(
-    name=NAME,
-    py_modules=[NAME],
+    name='mozdef-client-config',
+    py_modules=['mozdef_client_config'],
     version=VERSION,
     author='Greg Cox',
     author_email='gcox@mozilla.com',

@@ -6,7 +6,7 @@ mozdef_client is an argument-driven way to send events.  However, when you have 
 
 Building
 ~~~~~~~
-```fpm -s python -t rpm --rpm-dist "$$(rpmbuild -E '%{?dist}' | sed -e 's#^\.##')" --iteration 1 setup.py```
+```make rpm```
 
 Testing
 ~~~~~~~

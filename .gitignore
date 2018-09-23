@@ -1,7 +1,7 @@
 # Our config file:
 mozdef_client_config.conf
 # RPMs that get built
-python-mozdef_client_config-*.noarch.rpm
+python-mozdef-client-config-*.noarch.rpm
 
 # Imported from https://github.com/github/gitignore/raw/master/Python.gitignore
 # Byte-compiled / optimized / DLL files
