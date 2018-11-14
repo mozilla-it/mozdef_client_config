@@ -74,14 +74,6 @@ class ConfigedMozDefEvent(ConfigFetchMixin, MozDefEvent):
         # We must have a URL in the config
         if not _configfile.has_section('mozdef'):
             raise ValueError('config file lacks a "mozdef" section')
-        if not _configfile.has_option('mozdef', 'mozdef_url'):
-            raise ValueError('config file lacks a "mozdef_url" option')
-        url = _configfile.get('mozdef', 'mozdef_url')
-        super(ConfigedMozDefEvent, self).__init__(url)
-
-        # Turn the SSL verification on; we want this, and it gets noisy
-        # when it's off.
-        self.set_verify(True)
 
         # Try to pick up a boolean of whether to USE mozdef or not.
         # Default to 'yes, send events'
@@ -90,6 +82,19 @@ class ConfigedMozDefEvent(ConfigFetchMixin, MozDefEvent):
         except NoOptionError:
             _send_events = True
         self._send_events = _send_events
+
+        if not _configfile.has_option('mozdef', 'mozdef_url'):
+            if self._send_events:
+                raise ValueError('config file lacks a "mozdef_url" option')
+            else:
+                url = 'undefined.hostname.company.local'
+        else:
+            url = _configfile.get('mozdef', 'mozdef_url')
+        super(ConfigedMozDefEvent, self).__init__(url)
+
+        # Turn the SSL verification on; we want this, and it gets noisy
+        # when it's off.
+        self.set_verify(True)
 
     def send(self, *args, **kwargs):
         """ A cutoff to avoid sending events """

@@ -1,11 +1,13 @@
 [mozdef]
 # This section defines how we connect to the MozDef server
 #
-# The URL of your host is the main item needed.
-mozdef_url = https://your-host-here:8443/events
-
 # An optional 'stop sending events' flag.
 send_events = True
+
+# The URL of your host is the main item needed.
+# Mandatory if send_events is (default) True
+# Can be missing if send_events is declared False
+mozdef_url = https://your-host-here:8443/events
 
 [testing]
 # The 'testing' section contains information for the unit tests.
