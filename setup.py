@@ -9,7 +9,7 @@ import os
 import subprocess
 from setuptools import setup
 
-VERSION = '0.0.1'
+VERSION = '0.0.2'
 
 
 def git_version():
@@ -36,6 +36,7 @@ def git_version():
         git_revision = u"Unknown"
 
     return git_revision
+
 
 def read(fname):
     """ Contents of a single filename """
