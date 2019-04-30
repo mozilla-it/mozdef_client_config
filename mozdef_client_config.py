@@ -17,12 +17,12 @@ sys.dont_write_bytecode = True
 
 try:
     # 2.7's module:
-    from ConfigParser import NoOptionError
     from ConfigParser import SafeConfigParser as ConfigParser
+    from ConfigParser import NoOptionError, NoSectionError
 except ImportError:
     # 3's module:
-    from configparser import ConfigParser, \
-        NoOptionError
+    from configparser import ConfigParser
+    from configparser import NoOptionError, NoSectionError
 
 
 class ConfigFetchMixin(object):  # pylint: disable=too-few-public-methods
@@ -71,25 +71,22 @@ class ConfigedMozDefEvent(ConfigFetchMixin, MozDefEvent):
             MozDefEvent, where we get the mozdef URL from a config file.
         """
         _configfile = self._ingest_config_from_file()
-        # We must have a URL in the config
-        if not _configfile.has_section('mozdef'):
-            raise ValueError('config file lacks a "mozdef" section')
 
         # Try to pick up a boolean of whether to USE mozdef or not.
         # Default to 'yes, send events'
         try:
-            _send_events = _configfile.getboolean('mozdef', 'send_events')
-        except NoOptionError:
-            _send_events = True
-        self._send_events = _send_events
+            self._send_events = _configfile.getboolean('mozdef', 'send_events')
+        except (NoOptionError, NoSectionError):  # pragma: no cover
+            self._send_events = True
 
-        if not _configfile.has_option('mozdef', 'mozdef_url'):
+        try:
+            url = _configfile.get('mozdef', 'mozdef_url')
+        except (NoOptionError, NoSectionError):  # pragma: no cover
             if self._send_events:
                 raise ValueError('config file lacks a "mozdef_url" option')
             else:
                 url = 'undefined.hostname.company.local'
-        else:
-            url = _configfile.get('mozdef', 'mozdef_url')
+
         super(ConfigedMozDefEvent, self).__init__(url)
 
         # Turn the SSL verification on; we want this, and it gets noisy

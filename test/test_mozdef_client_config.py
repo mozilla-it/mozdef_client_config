@@ -37,7 +37,7 @@ class TestMozDefClientConfig(unittest.TestCase):
         self.library._send_events = False
         try:
             self.library.send()
-        except Exception:  # pylint: disable=broad-except
+        except Exception:  # pragma: no cover  pylint: disable=broad-except
             # there are many 'raise' items in send, none of which should hit.
             # And since this is a test, broad is intentional and fine.
             self.fail("send() raised ExceptionType unexpectedly.")
@@ -50,7 +50,7 @@ class TestMozDefClientConfig(unittest.TestCase):
                                 'is-a-test': 'yes'}
         try:
             self.library.send()
-        except Exception:  # pylint: disable=broad-except
+        except Exception:  # pragma: no cover  pylint: disable=broad-except
             # there are many 'raise' items in send, none of which should hit.
             # And since this is a test, broad is intentional and fine.
             self.fail("send() raised ExceptionType unexpectedly.")
