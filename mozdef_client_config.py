@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
     Library class for a mozdef client, where the not-message-specific
     config comes from a file rather than from all arguments.
@@ -32,28 +31,23 @@ class ConfigFetchMixin(object):  # pylint: disable=too-few-public-methods
                              '/usr/local/etc/mozdef_client_config.conf',
                              '/etc/mozdef_client_config.conf']
 
-    def _ingest_config_from_file(self, conf_file=None):
+    def _ingest_config_from_file(self):
         """
             pull in config variables from a system file
         """
-        if conf_file is None:
-            conf_file = self.__class__.CONFIG_FILE_LOCATIONS
-        if isinstance(conf_file, basestring):
-            conf_file = [conf_file]
+        conf_file = self.__class__.CONFIG_FILE_LOCATIONS
         config = configparser.ConfigParser()
         for filename in conf_file:
             if os.path.isfile(filename):
                 try:
                     config.read(filename)
                     break
-                except:  # pylint: disable=bare-except
-                    # This bare-except is due to 2.7
-                    # limitations in configparser.
+                except (configparser.Error):
                     pass
         return config
 
 
-class ConfigedMozDefEvent(ConfigFetchMixin, MozDefEvent):
+class ConfigedMozDefEvent(ConfigFetchMixin, MozDefEvent):  # pylint: disable=too-few-public-methods
     """
         This is the wrapper class for MozDefEvent.
         * get the mozdef URL from a config file
@@ -70,16 +64,15 @@ class ConfigedMozDefEvent(ConfigFetchMixin, MozDefEvent):
         # Default to 'yes, send events'
         try:
             self._send_events = _configfile.getboolean('mozdef', 'send_events')
-        except (configparser.NoOptionError, configparser.NoSectionError):  # pragma: no cover
+        except (configparser.NoOptionError, configparser.NoSectionError):
             self._send_events = True
 
         try:
             url = _configfile.get('mozdef', 'mozdef_url')
-        except (configparser.NoOptionError, configparser.NoSectionError):  # pragma: no cover
+        except (configparser.NoOptionError, configparser.NoSectionError):
             if self._send_events:
                 raise ValueError('config file lacks a "mozdef_url" option')
-            else:
-                url = 'undefined.hostname.company.local'
+            url = 'undefined.hostname.company.local'
 
         super(ConfigedMozDefEvent, self).__init__(url)
 
