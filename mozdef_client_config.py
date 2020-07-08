@@ -14,16 +14,10 @@ import sys
 #import mozdef_client
 from mozdef_client import MozDefEvent
 sys.dont_write_bytecode = True
-
 try:
-    # 2.7's module:
-    from ConfigParser import SafeConfigParser as ConfigParser
-    from ConfigParser import NoOptionError, NoSectionError
-except ImportError:
-    # 3's module:
-    from configparser import ConfigParser
-    from configparser import NoOptionError, NoSectionError
-
+    import configparser
+except ImportError:  # pragma: no cover
+    from six.moves import configparser
 
 class ConfigFetchMixin(object):  # pylint: disable=too-few-public-methods
     """
@@ -46,7 +40,7 @@ class ConfigFetchMixin(object):  # pylint: disable=too-few-public-methods
             conf_file = self.__class__.CONFIG_FILE_LOCATIONS
         if isinstance(conf_file, basestring):
             conf_file = [conf_file]
-        config = ConfigParser()
+        config = configparser.ConfigParser()
         for filename in conf_file:
             if os.path.isfile(filename):
                 try:
@@ -76,12 +70,12 @@ class ConfigedMozDefEvent(ConfigFetchMixin, MozDefEvent):
         # Default to 'yes, send events'
         try:
             self._send_events = _configfile.getboolean('mozdef', 'send_events')
-        except (NoOptionError, NoSectionError):  # pragma: no cover
+        except (configparser.NoOptionError, configparser.NoSectionError):  # pragma: no cover
             self._send_events = True
 
         try:
             url = _configfile.get('mozdef', 'mozdef_url')
-        except (NoOptionError, NoSectionError):  # pragma: no cover
+        except (configparser.NoOptionError, configparser.NoSectionError):  # pragma: no cover
             if self._send_events:
                 raise ValueError('config file lacks a "mozdef_url" option')
             else:
