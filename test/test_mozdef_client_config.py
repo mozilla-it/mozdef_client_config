@@ -1,11 +1,9 @@
 #!/usr/bin/python
 """ Test suite """
 import unittest
-import sys
-# prepend the mozdef_client library so that we can locally test.
-sys.path.insert(1, 'mozdef_client')
-import mozdef_client  # pylint: disable=wrong-import-position
-import mozdef_client_config  # pylint: disable=wrong-import-position
+import test.context  # pylint: disable=unused-import
+import mozdef_client
+import mozdef_client_config
 
 
 class TestMozDefClientConfig(unittest.TestCase):
