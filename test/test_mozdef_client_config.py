@@ -80,6 +80,32 @@ class TestMozDefClientConfig(unittest.TestCase):
         self.assertIsInstance(library._send_events, bool, '_send_events must be a bool')
         self.assertTrue(library._send_events, '_send_events defaults to True')
 
+    def test_11_properties(self):
+        """ Verify that property wrappers work """
+        test_reading_file = '/tmp/mozdef.cfg'
+        with open(test_reading_file, 'w') as filepointer:
+            filepointer.write('[mozdef]\nmozdef_url = foo\n')
+        filepointer.close()
+        with mock.patch.object(mozdef_client_config.ConfigFetchMixin, 'CONFIG_FILE_LOCATIONS',
+                               new=[test_reading_file]):
+            library = mozdef_client_config.ConfigedMozDefEvent()
+        # Don't set anything?  It's an event:
+        self.assertEqual(library.category, 'event')
+        # Setting:
+        library.category = 'Authentication'
+        # Getting OUR property:
+        self.assertEqual(library.category, 'authentication')
+        # And the upstream property (this might change in the future):
+        self.assertEqual(library._category, 'authentication')
+
+        self.assertEqual(library.source, None)
+        # Setting:
+        library.source = 'SomeWords Go Here'
+        # Getting OUR property:
+        self.assertEqual(library.source, 'SomeWords Go Here')
+        # And the upstream property (this might change in the future):
+        self.assertEqual(library._source, 'SomeWords Go Here')
+
     def test_send_squished(self):
         """ Verify that the send doesn't die when "not sending" """
         test_reading_file = '/tmp/mozdef.cfg'

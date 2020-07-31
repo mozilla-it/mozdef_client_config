@@ -85,6 +85,33 @@ class ConfigedMozDefEvent(ConfigFetchMixin, MozDefEvent):  # pylint: disable=too
         if self._send_events:
             super(ConfigedMozDefEvent, self).send(*args, **kwargs)
 
+    # wrap some properties that mozdef_client has used as internal
+    # but that do not have exposed wrappers for otherwise.
+    @property
+    def category(self):
+        """ GET the private _category variable in MozDefEvent """
+        return self._category
+
+    @category.setter
+    def category(self, setval):
+        """ SET the private _category variable in MozDefEvent """
+        # As of 2018 the spec asks for lower-case categories
+        self._category = setval.lower()  # pylint: disable=attribute-defined-outside-init
+
+    @property
+    def source(self):
+        """ GET the private _source variable in MozDefEvent """
+        return self._source
+
+    @source.setter
+    def source(self, setval):
+        """ SET the private _source variable in MozDefEvent """
+        self._source = setval  # pylint: disable=attribute-defined-outside-init
+
+    # Properties not wrapped as there is presently not a need:
+    # tags summary details
+    # Methods used by passthrough:
+    # set_severity_from_string syslog_convert
 
 # Classes from upstream:
 # class MozDefError         (no methods)
