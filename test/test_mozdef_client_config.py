@@ -78,7 +78,28 @@ class TestMozDefClientConfig(unittest.TestCase):
         self.assertIsInstance(library, mozdef_client.MozDefEvent)
         self.assertIsInstance(library, mozdef_client_config.ConfigedMozDefEvent)
         self.assertIsInstance(library._send_events, bool, '_send_events must be a bool')
+        self.assertIsInstance(library._send_to_syslog, bool, '_send_to_syslog must be a bool')
+        self.assertIsInstance(library._syslog_only, bool, '_syslog_only must be a bool')
         self.assertTrue(library._send_events, '_send_events defaults to True')
+        self.assertFalse(library._send_to_syslog, '_send_to_syslog defaults to False')
+        self.assertFalse(library._syslog_only, '_syslog_only defaults to False True')
+
+    def test_06_optional_params(self):
+        """ Verify that the self object was initialized with foofy parameters """
+        test_reading_file = '/tmp/mozdef.cfg'
+        with open(test_reading_file, 'w') as filepointer:
+            filepointer.write('[mozdef]\nsend_events = False\n')
+            filepointer.write('send_to_syslog = True\nsyslog_only = True\n')
+        filepointer.close()
+        with mock.patch.object(mozdef_client_config.ConfigFetchMixin, 'CONFIG_FILE_LOCATIONS',
+                               new=[test_reading_file]):
+            library = mozdef_client_config.ConfigedMozDefEvent()
+        self.assertIsInstance(library, mozdef_client.MozDefEvent)
+        self.assertIsInstance(library, mozdef_client_config.ConfigedMozDefEvent)
+        self.assertIsInstance(library._send_to_syslog, bool, '_send_to_syslog must be a bool')
+        self.assertIsInstance(library._syslog_only, bool, '_syslog_only must be a bool')
+        self.assertTrue(library._send_to_syslog, '_send_to_syslog becomes True')
+        self.assertTrue(library._syslog_only, '_syslog_only becomes True')
 
     def test_11_properties(self):
         """ Verify that property wrappers work """

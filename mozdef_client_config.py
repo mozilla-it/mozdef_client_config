@@ -76,6 +76,22 @@ class ConfigedMozDefEvent(ConfigFetchMixin, MozDefEvent):  # pylint: disable=too
 
         super(ConfigedMozDefEvent, self).__init__(url)
 
+        # Somewhat counterintuitively, we layer these settings on AFTER the super() call
+        # because we want to assert our choices over top of the defaults that mozdef_client
+        # sets on its own, that we can't actually control in the init process.
+
+        # Turn on syslog logging via config
+        try:
+            self._send_to_syslog = _configfile.getboolean('mozdef', 'send_to_syslog')
+        except (configparser.NoOptionError, configparser.NoSectionError):
+            self._send_to_syslog = False
+
+        # Allow to only send to syslog via config
+        try:
+            self._syslog_only = _configfile.getboolean('mozdef', 'syslog_only')
+        except (configparser.NoOptionError, configparser.NoSectionError):
+            self._syslog_only = False
+
         # Turn the SSL verification on; we want this, and it gets noisy
         # when it's off.
         self.set_verify(True)
