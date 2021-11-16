@@ -9,7 +9,7 @@ import os
 import subprocess
 from setuptools import setup
 
-VERSION = '0.0.3'
+VERSION = '0.0.4'
 
 
 def git_version():
