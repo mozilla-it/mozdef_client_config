@@ -80,6 +80,18 @@ class ConfigedMozDefEvent(ConfigFetchMixin, MozDefEvent):  # pylint: disable=too
         # when it's off.
         self.set_verify(True)
 
+        # Turn on syslog logging via config
+        try:
+            self._send_to_syslog = _configfile.getboolean('mozdef', 'send_to_syslog')
+        except (configparser.NoOptionError, configparser.NoSectionError):
+            self._send_to_syslog = False
+
+        # Allow to only send to syslog via config
+        try:
+            self._syslog_only = _configfile.getboolean('mozdef', 'syslog_only')
+        except (configparser.NoOptionError, configparser.NoSectionError):
+            self._syslog_only = False
+
     def send(self, *args, **kwargs):
         """ A cutoff to avoid sending events """
         if self._send_events:

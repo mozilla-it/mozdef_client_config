@@ -3,6 +3,10 @@
 #
 # An optional 'stop sending events' flag.
 send_events = True
+# Send event additionally to syslog
+send_to_syslog = False
+# Only send to syslog (never send to mozdef url)
+syslog_only = False
 
 # The URL of your host is the main item needed.
 # Mandatory if send_events is (default) True
