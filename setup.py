@@ -55,7 +55,7 @@ setup(
     keywords='mozilla ldap',
     url='https://github.com/mozilla-it/mozdef_client_config',
     long_description=read('README.rst'),
-    install_requires=['mozdef_client==1.0.11'],
+    install_requires=['mozdef_client>=1.0.11'],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Topic :: Software Development :: Libraries :: Python Modules',
