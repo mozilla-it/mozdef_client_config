@@ -92,6 +92,13 @@ class ConfigedMozDefEvent(ConfigFetchMixin, MozDefEvent):  # pylint: disable=too
         except (configparser.NoOptionError, configparser.NoSectionError):
             self._syslog_only = False
 
+        # Set a facility level if desired
+        try:
+            facility = _configfile.get('mozdef', 'syslog_facility')
+            self.set_facility_from_string(facility)
+        except (configparser.NoOptionError, configparser.NoSectionError):
+            pass
+
         # Turn the SSL verification on; we want this, and it gets noisy
         # when it's off.
         self.set_verify(True)
@@ -127,7 +134,7 @@ class ConfigedMozDefEvent(ConfigFetchMixin, MozDefEvent):  # pylint: disable=too
     # Properties not wrapped as there is presently not a need:
     # tags summary details
     # Methods used by passthrough:
-    # set_severity_from_string syslog_convert
+    # set_severity_from_string set_facility_from_string syslog_convert
 
 # Classes from upstream:
 # class MozDefError         (no methods)

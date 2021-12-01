@@ -8,6 +8,10 @@ send_events = True
 send_to_syslog = False
 # Only send to syslog (never send to mozdef url)
 syslog_only = False
+# What facility should syslog log at?  Choices:
+# (kern|user|mail|daemon|auth|lpr|news|uucp|cron|\
+#  local0|local1|local2|local3|local4|local5|local6|local7)
+syslog_facility = user
 
 # The URL of your host is the main item needed.
 # Mandatory if send_events is (default) True
